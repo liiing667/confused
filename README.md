@@ -53,6 +53,13 @@ Usage of confused:
 
 ```
 
+Safe namespaces (`-s`) are matched per namespace segment separated by `/`
+(e.g. `@myorg/*` matches `@myorg/lib` but not `@myorg/nested/lib`), using the
+same semantics on every operating system. Names are compared according to the
+selected ecosystem's equivalence rules: PyPI names follow PEP 503
+(case-insensitive, `-`/`_`/`.` equivalent) and Packagist names are
+case-insensitive, while npm, Maven and RubyGems names are case-sensitive.
+
 ## Example
 
 ### Python (PyPI)

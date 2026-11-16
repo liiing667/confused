@@ -11,8 +11,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"path/filepath"
-	"strings"
 )
 
 func main() {
@@ -56,7 +54,7 @@ func main() {
 		fmt.Printf("Encountered an error while trying to read packages from file: %s\n", err)
 		os.Exit(1)
 	}
-	outputPackages := removeSafe(resolver.PackagesNotInPublic(), safespaces)
+	outputPackages := removeSafe(resolver.PackagesNotInPublic(), safespaces, lang)
 	PrintResult(outputPackages)
 }
 
@@ -78,32 +76,4 @@ func PrintResult(notavail []string) {
 		fmt.Printf(" [!] %s\n", n)
 	}
 	os.Exit(1)
-}
-
-// removeSafe removes known-safe package names from the slice
-func removeSafe(packages []string, safespaces string) []string {
-	retSlice := []string{}
-	safeNamespaces := []string{}
-	var ignored bool
-	safeTmp := strings.Split(safespaces, ",")
-	for _, s := range safeTmp {
-		safeNamespaces = append(safeNamespaces, strings.TrimSpace(s))
-	}
-	for _, p := range packages {
-		ignored = false
-		for _, s := range safeNamespaces {
-			ok, err := filepath.Match(s, p)
-			if err != nil {
-				fmt.Printf(" [W] Encountered an error while trying to match a known-safe namespace %s : %s\n", s, err)
-				continue
-			}
-			if ok {
-				ignored = true
-			}
-		}
-		if !ignored {
-			retSlice = append(retSlice, p)
-		}
-	}
-	return retSlice
 }
